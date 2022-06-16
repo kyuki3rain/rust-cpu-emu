@@ -1,9 +1,8 @@
-use cpu_4bit_emulator::compiler::Compiler;
-use cpu_4bit_emulator::emulator::CpuEmulator;
-use cpu_4bit_emulator::parser::Parser;
-use cpu_4bit_emulator::port::Port;
-use cpu_4bit_emulator::register::Register;
-use cpu_4bit_emulator::rom::Rom;
+use rust_cpu_emu::compiler::Compiler;
+use rust_cpu_emu::emulator::CpuEmulator;
+use rust_cpu_emu::port::Port;
+use rust_cpu_emu::register::Register;
+use rust_cpu_emu::rom::Rom;
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
@@ -17,14 +16,8 @@ fn main() {
     let f = BufReader::new(File::open(args.get(1).unwrap()).expect("file not found"));
     let operations = f.lines().map(|line| line.unwrap()).collect::<Vec<String>>();
 
-    let mut parser = Parser::new(operations);
-    let tokens = match parser.parse() {
-        Ok(tokens) => tokens,
-        Err(err) => panic!("{:?}", err),
-    };
-
     let compiler = Compiler::new();
-    let program = match compiler.compile(tokens) {
+    let program = match compiler.compile(operations) {
         Ok(program) => program,
         Err(err) => panic!("{:?}", err),
     };

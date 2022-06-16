@@ -61,7 +61,7 @@ impl Register {
 
 #[cfg(test)]
 mod tests {
-    use crate::register::Register;
+    use super::*;
 
     #[test]
     fn test_set_register_a() {

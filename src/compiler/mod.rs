@@ -1,5 +1,9 @@
 use crate::error::EmulatorErr;
-use crate::token::{Register, Token};
+use parser::Parser;
+use token::{Register, Token};
+
+pub mod parser;
+pub mod token;
 
 pub struct Compiler;
 
@@ -14,7 +18,10 @@ impl Compiler {
         Self::default()
     }
 
-    pub fn compile(&self, tokens: Vec<Token>) -> Result<Vec<u8>, EmulatorErr> {
+    pub fn compile(&self, operations: Vec<String>) -> Result<Vec<u8>, EmulatorErr> {
+        let mut parser = Parser::new(operations);
+        let tokens = parser.parse()?;
+
         if tokens.is_empty() {
             return Err(EmulatorErr::new(
                 "Failed to start to compile because token list is empty.",
@@ -61,90 +68,88 @@ impl Compiler {
 #[cfg(test)]
 mod compiler_tests {
     use crate::compiler::Compiler;
-    use crate::token::Register;
-    use crate::token::Token::{Add, In, Jmp, Jnc, Mov, MovAB, MovBA, OutB, OutIm};
 
     #[test]
     fn test_compile_mov_a() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![Mov(Register::A, 1)]);
+        let program = compiler.compile(vec!["mov A 1".to_string()]);
         assert_eq!(program.unwrap(), vec![0b00110001]);
     }
 
     #[test]
     fn test_compile_mov_b() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![Mov(Register::B, 1)]);
+        let program = compiler.compile(vec!["mov B 1".to_string()]);
         assert_eq!(program.unwrap(), vec![0b01110001]);
     }
 
     #[test]
     fn test_compile_mov_ab() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![MovAB]);
+        let program = compiler.compile(vec!["mov A B".to_string()]);
         assert_eq!(program.unwrap(), vec![0b00010000]);
     }
 
     #[test]
     fn test_compile_mov_ba() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![MovBA]);
+        let program = compiler.compile(vec!["mov B A".to_string()]);
         assert_eq!(program.unwrap(), vec![0b01000000]);
     }
 
     #[test]
     fn test_compile_add_a() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![Add(Register::A, 1)]);
+        let program = compiler.compile(vec!["add A 1".to_string()]);
         assert_eq!(program.unwrap(), vec![0b00000001]);
     }
 
     #[test]
     fn test_compile_add_b() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![Add(Register::B, 1)]);
+        let program = compiler.compile(vec!["add B 1".to_string()]);
         assert_eq!(program.unwrap(), vec![0b01010001]);
     }
 
     #[test]
     fn test_compile_jmp() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![Jmp(1)]);
+        let program = compiler.compile(vec!["jmp 1".to_string()]);
         assert_eq!(program.unwrap(), vec![0b11110001]);
     }
 
     #[test]
     fn test_compile_jnc() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![Jnc(1)]);
+        let program = compiler.compile(vec!["jnc 1".to_string()]);
         assert_eq!(program.unwrap(), vec![0b11100001]);
     }
 
     #[test]
     fn test_compile_in_a() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![In(Register::A)]);
+        let program = compiler.compile(vec!["in A".to_string()]);
         assert_eq!(program.unwrap(), vec![0b00100000]);
     }
 
     #[test]
     fn test_compile_in_b() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![In(Register::B)]);
+        let program = compiler.compile(vec!["in B".to_string()]);
         assert_eq!(program.unwrap(), vec![0b01100000]);
     }
 
     #[test]
     fn test_compile_out_b() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![OutB]);
+        let program = compiler.compile(vec!["out B".to_string()]);
         assert_eq!(program.unwrap(), vec![0b10010000]);
     }
 
     #[test]
     fn test_compile_out_im() {
         let compiler = Compiler::new();
-        let program = compiler.compile(vec![OutIm(1)]);
+        let program = compiler.compile(vec!["out 1".to_string()]);
         assert_eq!(program.unwrap(), vec![0b10110001]);
     }
 }

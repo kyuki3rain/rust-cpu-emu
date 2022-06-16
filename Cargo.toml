@@ -1,5 +1,5 @@
 [package]
-name = "cpu-4bit-emulator"
+name = "rust-cpu-emu"
 version = "0.1.0"
 authors = ["yytyd <yuki.multiplus@gmail.com>"]
 edition = "2021"

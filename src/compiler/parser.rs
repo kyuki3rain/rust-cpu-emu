@@ -1,5 +1,5 @@
+use crate::compiler::{Register, Token};
 use crate::error::EmulatorErr;
-use crate::token::{Register, Token};
 
 pub struct Parser {
     pos: usize,
@@ -135,7 +135,7 @@ impl Parser {
 
 #[cfg(test)]
 mod parser_tests {
-    use crate::parser::Parser;
+    use crate::compiler::Parser;
 
     #[test]
     fn parse_simple() {

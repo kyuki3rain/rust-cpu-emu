@@ -1,6 +1,6 @@
-# cpu-4bit-emulator
+# rust-cpu-emu
 
-![Rust](https://github.com/yuk1ty/cpu-4bit-emulator/workflows/Rust/badge.svg?branch=master)
+![Rust](https://github.com/yuk1ty/rust-cpu-emu/workflows/Rust/badge.svg?branch=master)
 
 A toy emulator written in 『CPU の創り方』.
 
